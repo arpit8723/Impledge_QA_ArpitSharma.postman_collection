@@ -1,0 +1,258 @@
+{
+	"info": {
+		"_postman_id": "20a72c29-e2d1-4a34-b56a-12685fe800be",
+		"name": "Impledge_QA_ArpitSharma",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "40088244"
+	},
+	"item": [
+		{
+			"name": "Address - Verify",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response body has no errors\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    \r",
+							"    // Check if there's an error in the response\r",
+							"    if (jsonData.error) {\r",
+							"        // If there's an error, check if it has a 'code' field, but do not expect 'errors' to be empty\r",
+							"        pm.expect(jsonData.error.code).to.equal('ADDRESS.VERIFY.FAILURE');\r",
+							"    } else {\r",
+							"        // If there's no error in the response, ensure no 'error' field exists\r",
+							"        pm.expect(jsonData.error).to.not.exist;\r",
+							"    }\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response contains the correct error code\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    \r",
+							"    // If there's an error in the response, check if the error code matches the expected one\r",
+							"    if (jsonData.error) {\r",
+							"        pm.expect(jsonData.error.code).to.equal('ADDRESS.VERIFY.FAILURE');\r",
+							"    } else {\r",
+							"        // If there's no error, log that there was no error\r",
+							"        console.log(\"No error found in the response.\");\r",
+							"    }\r",
+							"});\r",
+							"\r",
+							"// If the ZIP code should only be checked when there's no error, you can add this check.\r",
+							"pm.test(\"Response ZIP code verified\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"\r",
+							"    // Only check ZIP if there's no error in the response\r",
+							"    if (!jsonData.error) {\r",
+							"        pm.expect(jsonData.zip).to.equal(\"06810\");  // Change 'zip' field name as per actual response\r",
+							"    } else {\r",
+							"        console.log(\"No valid data, error in response.\");\r",
+							"    }\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "jBucTRfsQP5eAweqv7JQrA",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": " {\r\n    \"company\": \"Residence Inn\",\r\n    \"street1\": \"22 Segar St\",\r\n    \"street2\": \"\",\r\n    \"city\": \"Danbury\",\r\n    \"country\": \"US\",\r\n    \"phone\": \"855-782-3877\",\r\n    \"email\": \"shipper@mailinator.com\"\r\n  }"
+				},
+				"url": {
+					"raw": "https://api.easypost.com/v2/addresses?verify_strict[]=delivery",
+					"protocol": "https",
+					"host": [
+						"api",
+						"easypost",
+						"com"
+					],
+					"path": [
+						"v2",
+						"addresses"
+					],
+					"query": [
+						{
+							"key": "verify_strict[]",
+							"value": "delivery"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Shipment-Details",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Check if rates array exists\r",
+							"pm.test(\"Rates array exists\", function () {\r",
+							"    pm.expect(pm.response.json().rates).to.be.an(\"array\");\r",
+							"});\r",
+							"\r",
+							"// Check if retail_rate is equal to 39.00 (update as needed)\r",
+							"pm.test(\"Retail rate is equal to expected value\", function () {\r",
+							"    const retailRate = pm.response.json().rates[0].retail_rate;\r",
+							"    pm.expect(retailRate).to.eql(\"39.00\"); // Adjust this if necessary\r",
+							"});\r",
+							"\r",
+							"// Check if retail_rate is greater than list_rate\r",
+							"pm.test(\"Retail rate is greater than list rate\", function () {\r",
+							"    const retailRate = pm.response.json().rates[0].retail_rate;\r",
+							"    const listRate = pm.response.json().rates[0].list_rate;\r",
+							"    pm.expect(parseFloat(retailRate)).to.be.greaterThan(parseFloat(listRate));\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "EZTK509f96b5526f4999a95fe2c80f96cea653tpDUAybvDdtFrt4wU0gA",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"shipment_id\": \"shp_e0b570fd1d7d4b62bd206917eae5881a\",\r\n  \"mode\": \"test\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api.easypost.com/v2/shipments/shp_5057996047b149bc868a6fa2f671c714?mode=test",
+					"protocol": "https",
+					"host": [
+						"api",
+						"easypost",
+						"com"
+					],
+					"path": [
+						"v2",
+						"shipments",
+						"shp_5057996047b149bc868a6fa2f671c714"
+					],
+					"query": [
+						{
+							"key": "mode",
+							"value": "test"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "New Shipment",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "EZTK509f96b5526f4999a95fe2c80f96cea653tpDUAybvDdtFrt4wU0gA",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"shipment\": {\r\n    \"to_address\": {\r\n      \"name\": \"John Doe\",\r\n      \"street1\": \"123 Main Street\",\r\n      \"city\": \"San Francisco\",\r\n      \"state\": \"CA\",\r\n      \"zip\": \"94105\",\r\n      \"country\": \"US\",\r\n      \"phone\": \"555-555-5555\"\r\n    },\r\n    \"from_address\": {\r\n      \"name\": \"Jane Doe\",\r\n      \"street1\": \"789 Elm Street\",\r\n      \"city\": \"Los Angeles\",\r\n      \"state\": \"CA\",\r\n      \"zip\": \"90001\",\r\n      \"country\": \"US\",\r\n      \"phone\": \"555-555-5555\"\r\n    },\r\n    \"parcel\": {\r\n      \"length\": 10,\r\n      \"width\": 8,\r\n      \"height\": 4,\r\n      \"weight\": 15\r\n    },\r\n    \"mode\": \"test\"\r\n  }\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api.easypost.com/v2/shipments",
+					"protocol": "https",
+					"host": [
+						"api",
+						"easypost",
+						"com"
+					],
+					"path": [
+						"v2",
+						"shipments"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "basic",
+		"basic": [
+			{
+				"key": "username",
+				"value": "EZTK0126bfcd0c834208b2289e3c501630d7IMAAxVrGZ2G1UXCmomm4Pw",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
