@@ -22,7 +22,8 @@ javascript
     
 If the error field exists, it checks if the error code matches ADDRESS.VERIFY.FAILURE.
 If there's no error, it verifies that the error field is absent.
-Postman Test 02: New Request – Get Shipment Details
+
+# Postman Test 02: New Request – Get Shipment Details
 The shipment ID shp_e0b570fd1d7d4b62bd206917eae5881a returned a 404 Not Found error: "The requested resource could not be found."
 
 After discussing with the recruiter, I was given permission to create a new test shipment. I generated a new shipment ID and proceeded with the request.
